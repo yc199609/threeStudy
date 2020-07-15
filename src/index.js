@@ -117,6 +117,47 @@ const ClothInit = () => {
     map: clothTexture,
     alphaTest: 0.5
   });
+
+    // 下面是3根杆子
+    var poleGeo = new THREE.BoxBufferGeometry( 5, 375, 5 );
+    var poleMat = new THREE.MeshLambertMaterial();
+  
+    var mesh1 = new THREE.Mesh( poleGeo, poleMat );
+    mesh1.position.x = - 125;
+    mesh1.position.y = - 62;
+    mesh1.receiveShadow = true;
+    mesh1.castShadow = true;
+    scene.add( mesh1 );
+
+    var mesh2 = new THREE.Mesh( poleGeo, poleMat );
+    mesh2.position.x = 125;
+    mesh2.position.y = - 62;
+    mesh2.receiveShadow = true;
+    mesh2.castShadow = true;
+    scene.add( mesh2 );
+
+    var mesh3 = new THREE.Mesh( new THREE.BoxBufferGeometry( 255, 5, 5 ), poleMat );
+    mesh3.position.y = - 250 + ( 750 / 2 );
+    mesh3.position.x = 0;
+    mesh3.receiveShadow = true;
+    mesh3.castShadow = true;
+    scene.add( mesh3 );
+
+    // 杆子下的支持点
+    var gg = new THREE.BoxBufferGeometry( 10, 10, 10 );
+    var mesh = new THREE.Mesh( gg, poleMat );
+    mesh.position.y = - 250;
+    mesh.position.x = 125;
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    scene.add( mesh );
+
+    var mesh = new THREE.Mesh( gg, poleMat );
+    mesh.position.y = - 250;
+    mesh.position.x = - 125;
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    scene.add( mesh );
 }
 
 init();
