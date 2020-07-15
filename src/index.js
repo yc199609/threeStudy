@@ -4,17 +4,14 @@ import patternImg from './assets/circuit_pattern.png';
 import grassImg from './assets/grasslight-big.jpg';
 
 const global = {
-  container: null,
   scene: null,
   camera: null,
-  light: null,
   renderer: null,
-  controls: null
+  loader: null,
 }
 
 const init = () => {
-  global.container = document.createElement( 'div' );
-  const container = global.container;
+  const container = document.createElement( 'div' );
   document.body.appendChild(container);
 
   // 场景
@@ -29,10 +26,9 @@ const init = () => {
   camera.position.set( 1000, 50, 1500 );
 
   // 灯光
-  scene.add( new THREE.AmbientLight( 0x666666 )) // 环境光
+  scene.add( new THREE.AmbientLight( 0x666666 )); // 环境光
 
-  global.light = new THREE.DirectionalLight( 0xdfebff, 1 ); // 方向光源
-  const light = global.light;
+  const light = new THREE.DirectionalLight( 0xdfebff, 1 ); // 方向光源
   light.position.set( 50, 200, 100 );
   light.position.multiplyScalar( 1.3 ); // 向量乘1.3
   light.castShadow = true; // 灯光产生的阴影
@@ -56,11 +52,27 @@ const init = () => {
   renderer.shadowMap.enabled = true;
 
   // 控制器
-  global.controls = new OrbitControls( camera, renderer.domElement );
-  const controls = global.controls;
+  const controls = new OrbitControls( camera, renderer.domElement );
   controls.maxPolarAngle = Math.PI * 0.5;
   controls.minDistance = 1000;
   controls.maxDistance = 5000;
+
+  // loader
+  global.loader = new THREE.TextureLoader();
+
+  // 地板
+  const groundTexture = global.loader.load( grassImg );
+  groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+  groundTexture.repeat.set( 25, 25 );
+  groundTexture.anisotropy = 16;
+  groundTexture.encoding = THREE.sRGBEncoding;
+
+  const groundMaterial = new THREE.MeshLambertMaterial({ map: groundTexture });
+  const groundMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial);
+  groundMesh.position.y = - 250;
+  groundMesh.rotation.x = - Math.PI / 2;
+  groundMesh.receiveShadow = true;
+  scene.add(groundMesh);
 }
 
 const animate = () => {
@@ -74,7 +86,7 @@ const render = () => {
 }
 
 const ClothInit = () => {
-  const loader = new THREE.TextureLoader();
+  const { loader, scene } = global;
   const clothTexture = loader.load(patternImg);
   clothTexture.anisotropy = 16;
 
@@ -98,7 +110,7 @@ const ClothInit = () => {
   const object = new THREE.Mesh(clothGeometry, clothMaterial);
   object.position.set( 0, 0, 0 );
   object.castShadow = true;
-  global.scene.add( object );
+  scene.add( object );
 
   object.customDepthMaterial = new THREE.MeshDepthMaterial({
     depthPacking: THREE.RGBADepthPacking,
