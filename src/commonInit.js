@@ -4,7 +4,7 @@ import './styles.css';
 export const clock = new THREE.Clock();
 
 export const container = document.createElement( 'div' );
-document.body.appendChild(container);
+document.getElementById('canvas').appendChild(container);
 
 // renderer
 export const renderer = new THREE.WebGLRenderer({antialias: true});
